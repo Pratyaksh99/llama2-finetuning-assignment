@@ -91,7 +91,7 @@ class Dolly15kDatasetProcessor:
             texts,
             truncation=True,
             max_length=self.max_length,
-            padding=False,
+            padding='max_length',
             return_tensors=None
         )
         tokenized['labels'] = tokenized['input_ids'].copy()
@@ -263,7 +263,11 @@ def main():
         save_total_limit=2,
     )
     
-    data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
+    data_collator = DataCollatorForLanguageModeling(
+        tokenizer=tokenizer, 
+        mlm=False,
+        pad_to_multiple_of=8
+    )
     
     trainer = Trainer(
         model=model,
